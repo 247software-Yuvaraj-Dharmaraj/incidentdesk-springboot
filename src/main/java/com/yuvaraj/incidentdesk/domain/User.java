@@ -32,6 +32,12 @@ public class User {
     @Column(nullable = false, length = 20)
     private Role role = Role.REPORTER;
 
+    @Column(nullable = false, length = 20)
+    private String theme = "light"; // light | dark
+
+    @Column(nullable = false, length = 20)
+    private String density = "comfortable"; // comfortable | compact
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
@@ -77,6 +83,22 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
+    }
+
+    public String getDensity() {
+        return density;
+    }
+
+    public void setDensity(String density) {
+        this.density = density;
     }
 
     public Instant getCreatedAt() {

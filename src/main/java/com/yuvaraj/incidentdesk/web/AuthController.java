@@ -2,6 +2,7 @@ package com.yuvaraj.incidentdesk.web;
 
 import com.yuvaraj.incidentdesk.domain.User;
 import com.yuvaraj.incidentdesk.dto.AuthDtos.LoginRequest;
+import com.yuvaraj.incidentdesk.dto.AuthDtos.PreferencesRequest;
 import com.yuvaraj.incidentdesk.dto.AuthDtos.SignupRequest;
 import com.yuvaraj.incidentdesk.dto.AuthDtos.UserResponse;
 import com.yuvaraj.incidentdesk.exception.ApiException;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,6 +69,15 @@ public class AuthController {
         if (user == null) {
             throw ApiException.unauthorized("Session user no longer exists");
         }
+        return Map.of("user", UserResponse.from(user));
+    }
+
+    @PatchMapping("/me/preferences")
+    public Map<String, Object> updatePreferences(@Valid @RequestBody PreferencesRequest request, @AuthenticationPrincipal AppUser principal) {
+        if (request.theme() == null && request.density() == null) {
+            throw ApiException.badRequest("At least one preference is required");
+        }
+        User user = authService.updatePreferences(principal.id(), request);
         return Map.of("user", UserResponse.from(user));
     }
 

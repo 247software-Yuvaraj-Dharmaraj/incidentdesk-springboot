@@ -2,6 +2,7 @@ package com.yuvaraj.incidentdesk.service;
 
 import com.yuvaraj.incidentdesk.domain.User;
 import com.yuvaraj.incidentdesk.dto.AuthDtos.LoginRequest;
+import com.yuvaraj.incidentdesk.dto.AuthDtos.PreferencesRequest;
 import com.yuvaraj.incidentdesk.dto.AuthDtos.SignupRequest;
 import com.yuvaraj.incidentdesk.exception.ApiException;
 import com.yuvaraj.incidentdesk.repository.UserRepository;
@@ -45,5 +46,18 @@ public class AuthService {
     @Transactional(readOnly = true)
     public User getById(String id) {
         return users.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public User updatePreferences(String id, PreferencesRequest prefs) {
+        User user = users.findById(id)
+                .orElseThrow(() -> ApiException.unauthorized("Session user no longer exists"));
+        if (prefs.theme() != null) {
+            user.setTheme(prefs.theme());
+        }
+        if (prefs.density() != null) {
+            user.setDensity(prefs.density());
+        }
+        return users.save(user);
     }
 }
