@@ -30,10 +30,6 @@ app:
     expires-in-days: 7
   client-url: ${CLIENT_URL:http://localhost:5173}
   cookie-secure: ${COOKIE_SECURE:false}
-  # TEMP (demo data): defaults ON so a deploy reseeds the rich demo dataset on every boot.
-  # To stop: set SEED_RESET=false, or revert the rich-seed commit.
-  seed:
-    reset: ${SEED_RESET:true}
   gemini:
     api-key: ${GEMINI_API_KEY:}
     model: ${GEMINI_MODEL:gemini-2.5-flash}
