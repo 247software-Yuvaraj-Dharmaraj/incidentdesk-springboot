@@ -96,22 +96,25 @@ public final class IncidentDtos {
             AuthDtos.UserPreview assignee,
             List<AuditLogResponse> auditLogs) {
 
+        // List rows omit description (a TEXT field up to 2000 chars) — the detail
+        // view refetches the full incident by id. With Jackson non_null inclusion,
+        // the null description is dropped from the list JSON entirely.
         public static IncidentResponse summary(Incident i) {
-            return build(i, null);
+            return build(i, null, null);
         }
 
         public static IncidentResponse detail(Incident i, List<AuditLog> audit) {
-            return build(i, audit.stream().map(AuditLogResponse::from).toList());
+            return build(i, i.getDescription(), audit.stream().map(AuditLogResponse::from).toList());
         }
 
-        private static IncidentResponse build(Incident i, List<AuditLogResponse> audit) {
+        private static IncidentResponse build(Incident i, String description, List<AuditLogResponse> audit) {
             return new IncidentResponse(
                     i.getId(),
                     i.getTitle(),
                     i.getType(),
                     i.getPriority(),
                     i.getStatus(),
-                    i.getDescription(),
+                    description,
                     i.getDueDate(),
                     i.getResolvedAt(),
                     i.getReporter().getId(),
