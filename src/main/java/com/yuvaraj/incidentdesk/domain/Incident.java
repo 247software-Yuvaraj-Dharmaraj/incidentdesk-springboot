@@ -11,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
@@ -53,7 +52,6 @@ public class Incident {
     @JoinColumn(name = "assignee_id")
     private User assignee;
 
-    @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -65,6 +63,9 @@ public class Incident {
     void prePersist() {
         if (id == null) {
             id = Cuid.generate();
+        }
+        if (createdAt == null) {
+            createdAt = Instant.now();
         }
     }
 
@@ -146,6 +147,10 @@ public class Incident {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Instant getUpdatedAt() {

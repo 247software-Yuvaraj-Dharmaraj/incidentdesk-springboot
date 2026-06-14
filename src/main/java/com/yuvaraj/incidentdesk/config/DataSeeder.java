@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 /** Seeds demo accounts and sample incidents on first run (mirrors the original seed script). */
 @Component
@@ -44,14 +45,15 @@ public class DataSeeder implements CommandLineRunner {
         User admin = createUser("admin@incidentdesk.dev", "Admin123!", "Avery Admin", Role.ADMIN);
         User reporter = createUser("reporter@incidentdesk.dev", "Reporter123!", "Riley Reporter", Role.REPORTER);
 
-        save("Main entrance turnstile jammed", IncidentType.MAINTENANCE, Priority.HIGH, Status.CLOSED, reporter, admin, true);
-        save("Fire exit sign flickering", IncidentType.MAINTENANCE, Priority.CRITICAL, Status.CLOSED, reporter, admin, true);
-        save("Broken AC unit 3", IncidentType.MAINTENANCE, Priority.HIGH, Status.CLOSED, reporter, admin, true);
-        save("Spilled drink near section 104", IncidentType.INCIDENT, Priority.LOW, Status.CLOSED, reporter, admin, true);
-        save("Lost child reported at gate B", IncidentType.INCIDENT, Priority.LOW, Status.CLOSED, reporter, admin, true);
-        save("Request: extra security for VIP event", IncidentType.REQUEST, Priority.MEDIUM, Status.CLOSED, reporter, admin, true);
-        save("Phone lost near food court", IncidentType.INCIDENT, Priority.MEDIUM, Status.IN_PROGRESS, reporter, admin, false);
-        save("Sample incident", IncidentType.INCIDENT, Priority.MEDIUM, Status.OPEN, reporter, null, false);
+        //   title, type, priority, status, reporter, assignee, createdDaysAgo, resolveAfterHours (0 = unresolved)
+        save("Main entrance turnstile jammed", IncidentType.MAINTENANCE, Priority.HIGH, Status.CLOSED, reporter, admin, 12, 6);
+        save("Fire exit sign flickering", IncidentType.MAINTENANCE, Priority.CRITICAL, Status.CLOSED, reporter, admin, 10, 2);
+        save("Broken AC unit 3", IncidentType.MAINTENANCE, Priority.HIGH, Status.CLOSED, reporter, admin, 9, 28);
+        save("Spilled drink near section 104", IncidentType.INCIDENT, Priority.LOW, Status.CLOSED, reporter, admin, 7, 1);
+        save("Lost child reported at gate B", IncidentType.INCIDENT, Priority.LOW, Status.CLOSED, reporter, admin, 6, 3);
+        save("Request: extra security for VIP event", IncidentType.REQUEST, Priority.MEDIUM, Status.CLOSED, reporter, admin, 4, 18);
+        save("Phone lost near food court", IncidentType.INCIDENT, Priority.MEDIUM, Status.IN_PROGRESS, reporter, admin, 2, 0);
+        save("Sample incident", IncidentType.INCIDENT, Priority.MEDIUM, Status.OPEN, reporter, null, 0, 0);
 
         log.info("Seed complete: {} users, {} incidents", users.count(), incidents.count());
     }
@@ -66,7 +68,7 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void save(String title, IncidentType type, Priority priority, Status status,
-                      User reporter, User assignee, boolean resolved) {
+                      User reporter, User assignee, long createdDaysAgo, long resolveAfterHours) {
         Incident incident = new Incident();
         incident.setTitle(title);
         incident.setType(type);
@@ -74,8 +76,10 @@ public class DataSeeder implements CommandLineRunner {
         incident.setStatus(status);
         incident.setReporter(reporter);
         incident.setAssignee(assignee);
-        if (resolved) {
-            incident.setResolvedAt(Instant.now());
+        Instant created = Instant.now().minus(createdDaysAgo, ChronoUnit.DAYS);
+        incident.setCreatedAt(created);
+        if (resolveAfterHours > 0) {
+            incident.setResolvedAt(created.plus(resolveAfterHours, ChronoUnit.HOURS));
         }
         incidents.save(incident);
     }
