@@ -34,15 +34,13 @@ public class TriageService {
 
     private final String apiKey;
     private final String model;
-    private final ObjectMapper mapper;
+    private final ObjectMapper mapper = new ObjectMapper();
     private final RestClient http = RestClient.create();
 
     public TriageService(@Value("${app.gemini.api-key}") String apiKey,
-                         @Value("${app.gemini.model}") String model,
-                         ObjectMapper mapper) {
+                         @Value("${app.gemini.model}") String model) {
         this.apiKey = apiKey;
         this.model = model;
-        this.mapper = mapper;
     }
 
     public boolean isEnabled() {
