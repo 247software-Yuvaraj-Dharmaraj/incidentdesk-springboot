@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -79,9 +80,8 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     @Override
+    @Transactional
     public void run(String... args) {
-        // No @Transactional here: each save/deleteAll is its own tx so a seeding failure can never
-        // leave a rollback-only transaction that fails the CommandLineRunner and crashes startup.
         try {
             seed();
         } catch (Exception e) {
