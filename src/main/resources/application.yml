@@ -1,0 +1,42 @@
+server:
+  port: ${PORT:4000}
+
+spring:
+  application:
+    name: incidentdesk
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expires-in-days: 7
+  client-url: ${CLIENT_URL:http://localhost:5173}
+  cookie-secure: ${COOKIE_SECURE:false}
+  gemini:
+    api-key: ${GEMINI_API_KEY:}
+    model: ${GEMINI_MODEL:gemini-2.5-flash}
+  socket:
+    enabled: ${SOCKET_ENABLED:true}
+    port: ${SOCKET_PORT:9092}
+
+logging:
+  level:
+    org.springframework.security: INFO
