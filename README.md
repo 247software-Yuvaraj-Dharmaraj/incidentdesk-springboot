@@ -2,6 +2,12 @@
 
 A **Java / Spring Boot** reimplementation of the [IncidentDesk](https://github.com/247software-Yuvaraj-Dharmaraj/incidentdesk) backend (originally Node + Express + Prisma). It preserves the same REST API contract, so the existing React frontend works unchanged.
 
+> **Live demo:** https://incidentdesk-java.vercel.app — the React frontend running entirely on this Spring Boot backend (Render + Neon Postgres)
+> **Live API:** https://incidentdesk-springboot.onrender.com/api · health check: [`/api/health`](https://incidentdesk-springboot.onrender.com/api/health)
+> **Demo logins:** `admin@incidentdesk.dev` / `Admin123!` · `reporter@incidentdesk.dev` / `Reporter123!`
+>
+> _Hosted on a free tier that sleeps when idle — the first request after a pause may take ~30–60s to wake._
+
 ## Tech stack
 
 - **Java 21**, **Spring Boot 4**
